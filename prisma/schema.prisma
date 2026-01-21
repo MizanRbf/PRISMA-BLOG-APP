@@ -25,6 +25,7 @@ model Post {
   authorId   String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+  comments   Comments[]
 }
 
 model Comments {
@@ -32,10 +33,15 @@ model Comments {
   content   String        @db.Text
   authorId  String
   postId    String
+  post      Post          @relation(fields: [postId], references: [id])
   parentId  String?
   status    CommentStatus @default(APPROVED)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+
+  @@index([postId])
+  @@index([authorId])
+  @@map("comments")
 }
 
 enum PostStatus {
