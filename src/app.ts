@@ -2,6 +2,8 @@ import express from "express";
 import { postRouter } from "./modules/post/post.route";
 const app = express();
 
+app.use(express.json());
+
 // post routes
 app.use("/posts", postRouter);
 
