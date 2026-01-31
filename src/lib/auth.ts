@@ -5,12 +5,12 @@ import nodemailer from "nodemailer";
 
 // Send Email Setup
 const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
+  host: "smtp.gmail.com",
   port: 587,
-  secure: false, // Use true for port 465, false for port 587
+  secure: false,
   auth: {
-    user: "maddison53@ethereal.email",
-    pass: "jn7jnAPss4f63QBp6D",
+    user: process.env.APP_USER,
+    pass: process.env.APP_PASS,
   },
 });
 export const auth = betterAuth({
