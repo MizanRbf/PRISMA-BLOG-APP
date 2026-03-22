@@ -1,10 +1,14 @@
 import express from "express";
 import { postControllers } from "./post.controller";
-import auth from "../../Middleware/authMiddleware";
+import auth, { UserRole } from "../../Middleware/authMiddleware";
 const router = express.Router();
 
 // POST
-router.post("/", auth("admin", "user"), postControllers.createPost);
+router.post(
+  "/",
+  auth(UserRole.USER, UserRole.ADMIN),
+  postControllers.createPost,
+);
 
 // GET
 
