@@ -1,6 +1,7 @@
 import { Post } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
+// create post
 const createPost = async (
   data: Omit<Post, "id" | "createdAt" | "updatedAt" | "authorId">,
   userId: string,
@@ -15,6 +16,13 @@ const createPost = async (
   return result;
 };
 
+// get all posts
+const getAllPosts = async () => {
+  const result = await prisma.post.findMany();
+  return result;
+};
+
 export const postService = {
   createPost,
+  getAllPosts,
 };

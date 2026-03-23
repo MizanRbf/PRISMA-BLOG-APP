@@ -27,10 +27,15 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
-// get posts
+// get all posts
 const getAllPosts = async (req: Request, res: Response) => {
   try {
-    const result = await postService.getPosts();
+    const result = await postService.getAllPosts();
+    res.status(200).json({
+      success: true,
+      message: "Posts retrieved successfully",
+      data: result,
+    });
   } catch (err: any) {
     res.status(500).json({
       success: false,
