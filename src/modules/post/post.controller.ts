@@ -26,6 +26,21 @@ const createPost = async (req: Request, res: Response) => {
     });
   }
 };
+
+// get posts
+const getAllPosts = async (req: Request, res: Response) => {
+  try {
+    const result = await postService.getPosts();
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+// export controllers
 export const postControllers = {
   createPost,
+  getAllPosts,
 };

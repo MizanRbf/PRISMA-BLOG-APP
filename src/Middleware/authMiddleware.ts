@@ -25,8 +25,6 @@ export default function auth(...roles: UserRole[]) {
         headers: req.headers as any,
       });
 
-      console.log(session);
-
       if (!session) {
         return res.status(401).json({
           success: false,

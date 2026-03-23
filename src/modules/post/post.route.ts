@@ -11,7 +11,7 @@ router.post(
 );
 
 // GET
-
+router.get("/", postControllers.getAllPosts);
 // UPDATE
 
 // DELETE
