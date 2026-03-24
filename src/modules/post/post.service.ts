@@ -25,7 +25,7 @@ const getAllPosts = async ({
 }: {
   search: string | undefined;
   tags: string[] | [];
-  isFeatured: boolean;
+  isFeatured: boolean | undefined;
 }) => {
   // and condition for search query
   const andConditions: PostWhereInput[] = [];

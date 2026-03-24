@@ -40,7 +40,11 @@ const getAllPosts = async (req: Request, res: Response) => {
     // get isFeatured query and convert it into boolean
     const isFeatured = req.query.isFeatured
       ? req.query.isFeatured === "true"
-      : false;
+        ? true
+        : req.query.isFeatured === "false"
+          ? false
+          : undefined
+      : undefined;
 
     const result = await postService.getAllPosts({
       search: searchString,
