@@ -21,28 +21,34 @@ const createPost = async (
 const getAllPosts = async ({
   search,
   tags,
+  isFeatured,
 }: {
   search: string | undefined;
   tags: string[] | [];
+  isFeatured: boolean;
 }) => {
   // and condition for search query
   const andConditions: PostWhereInput[] = [];
+
   // search in title, content and tags
   if (search) {
     andConditions.push({
       OR: [
+        // search by title
         {
           title: {
             contains: search,
             mode: "insensitive",
           },
         },
+        // search by content
         {
           content: {
             contains: search,
             mode: "insensitive",
           },
         },
+        // search by tags
         {
           tags: {
             has: search,
@@ -51,14 +57,24 @@ const getAllPosts = async ({
       ],
     });
   }
-  // filter by tags
+
+  // filter by multiple tags
   if (tags.length > 0) {
     andConditions.push({
       tags: {
-        hasEvery: tags,
+        hasEvery: tags as string[],
       },
     });
   }
+
+  // filter by isFeatured
+  if (typeof isFeatured === "boolean") {
+    andConditions.push({
+      isFeatured,
+    });
+  }
+
+  // fetch posts from database
   const result = await prisma.post.findMany({
     where: {
       AND: andConditions,
@@ -67,6 +83,7 @@ const getAllPosts = async ({
   return result;
 };
 
+// export service
 export const postService = {
   createPost,
   getAllPosts,
