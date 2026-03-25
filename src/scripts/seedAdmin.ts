@@ -1,13 +1,15 @@
+import { prisma } from "../lib/prisma";
 import { UserRole } from "../Middleware/authMiddleware";
 
 async function seedAdmin() {
   try {
+    console.log("****Admin seeding started....");
     // Admin data
     const adminData = {
-      name: "Mizan",
-      email: "mizan@example.com",
+      name: "MizanRbf",
+      email: "mizan@example2.com",
       role: UserRole.ADMIN,
-      password: "password123",
+      password: "admin123",
     };
 
     // Check if admin already exists
@@ -20,6 +22,8 @@ async function seedAdmin() {
     // if admin already exists, throw an error
     if (existingAdmin) {
       throw new Error("Admin already exists");
+    } else {
+      console.log("Admin does not exist, creating a new admin");
     }
 
     // if admin does not exist, create a new admin
@@ -29,11 +33,32 @@ async function seedAdmin() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          body: JSON.stringify(adminData),
         },
+        body: JSON.stringify(adminData),
       },
     );
+
+    console.log(signUpAdmin);
+
+    // check if admin created successfully
+    if (signUpAdmin.ok) {
+      console.log("****Admin created successfully");
+      await prisma.user.update({
+        where: {
+          email: adminData.email,
+        },
+        data: {
+          emailVerified: true,
+        },
+      });
+      console.log("****Email verification status updated");
+      console.log("****** Success ******");
+    } else {
+      console.log("****Admin creation failed!!!");
+    }
   } catch (err: any) {
     console.log(err.message);
   }
 }
+
+seedAdmin();

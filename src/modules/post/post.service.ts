@@ -24,13 +24,18 @@ const getAllPosts = async ({
   isFeatured,
   status,
   authorId,
+  page,
+  limit,
 }: {
   search: string | undefined;
   tags: string[] | [];
   isFeatured: boolean | undefined;
   status: PostStatus | undefined;
   authorId: string | undefined;
+  page: number;
+  limit: number;
 }) => {
+  console.log(page, limit);
   // and condition for search query
   const andConditions: PostWhereInput[] = [];
 
