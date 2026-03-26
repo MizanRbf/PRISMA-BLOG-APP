@@ -117,7 +117,24 @@ const getAllPosts = async ({
           }
         : { createdAt: "desc" },
   });
-  return result;
+
+  // get total count of posts
+  const total = await prisma.post.count({
+    where: {
+      AND: andConditions,
+    },
+  });
+
+  // return posts and total count
+  return {
+    data: result,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 
 // export service
