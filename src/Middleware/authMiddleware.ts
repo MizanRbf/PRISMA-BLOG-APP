@@ -24,6 +24,7 @@ export default function auth(...roles: UserRole[]) {
       const session = await betterAuth.api.getSession({
         headers: req.headers as any,
       });
+      console.log(session);
 
       if (!session) {
         return res.status(401).json({
@@ -54,6 +55,7 @@ export default function auth(...roles: UserRole[]) {
             "forbidden! You don't have permission to access this resource",
         });
       }
+      next();
     } catch (err) {
       next(err);
     }

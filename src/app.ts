@@ -18,7 +18,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 
 // Routes
 app.use("/posts", postRouter);
-app.use("/", commentRouter);
+app.use("/comments", commentRouter);
 app.get("/", (req, res) => {
   res.send("Hello, world!");
 });

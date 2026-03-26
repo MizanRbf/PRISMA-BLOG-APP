@@ -6,6 +6,7 @@ import paginationSortingHelpers from "../../helpers/paginationSortingHelpers";
 // create posts
 const createPost = async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     if (!req.user) {
       return res.status(401).json({
         success: false,

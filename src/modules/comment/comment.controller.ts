@@ -4,7 +4,10 @@ import { commentService } from "./comment.service";
 // create comment
 const createComment = async (req: Request, res: Response) => {
   try {
-    const result = await commentService.createComment();
+    const user = req.user;
+
+    req.body.authorId = user?.id;
+    const result = await commentService.createComment(req.body);
     res.status(201).json({
       success: true,
       message: "Comment created successfully",
@@ -16,4 +19,9 @@ const createComment = async (req: Request, res: Response) => {
       message: err.message,
     });
   }
+};
+
+// Export comment controllers
+export const commentControllers = {
+  createComment,
 };
