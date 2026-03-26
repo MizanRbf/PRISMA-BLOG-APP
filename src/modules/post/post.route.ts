@@ -12,6 +12,7 @@ router.post(
 
 // GET
 router.get("/", postControllers.getAllPosts);
+router.get("/:postId", postControllers.getPostById);
 
 // UPDATE
 
