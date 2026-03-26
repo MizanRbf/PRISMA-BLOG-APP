@@ -137,6 +137,11 @@ const getAllPosts = async ({
   };
 };
 
+// get post by id
+const getPostById = async (id: string) => {
+  const result = postService.getPostById(id);
+};
+
 // export service
 export const postService = {
   createPost,
