@@ -3,9 +3,11 @@ import { prisma } from "./lib/prisma";
 const PORT = process.env.PORT || 3000;
 async function main() {
   try {
+    // app connection with database
     await prisma.$connect();
     console.log("Connected to the database successfully.");
 
+    // start the server
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
