@@ -29,7 +29,35 @@ const createComment = async (payload: {
   });
 };
 
+// get comment by id
+const getCommentById = async (commentId: string) => {
+  return await prisma.comments.findUnique({
+    where: {
+      id: commentId,
+    },
+    include: {
+      post: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
+  });
+};
+
+// delete comment
+const deleteComment = async (commentId: string) => {
+  return prisma.comments.delete({
+    where: {
+      id: commentId,
+    },
+  });
+};
+
 // Export comment service
 export const commentService = {
   createComment,
+  getCommentById,
+  deleteComment,
 };
