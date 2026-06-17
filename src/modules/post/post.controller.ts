@@ -86,6 +86,28 @@ const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
+// get myPost
+const getMyPost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error("You are unauthorized");
+    }
+    const result = await postService.getMyPost(user?.id as string);
+    // send response
+    res.status(200).json({
+      success: true,
+      message: "Post retrieved successfully",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 // get post by id
 const getPostById = async (req: Request, res: Response) => {
   try {
@@ -113,9 +135,39 @@ const getPostById = async (req: Request, res: Response) => {
   }
 };
 
+// update myPost
+const updateMyPost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error("You are unauthorized");
+    }
+    const { postId } = req.params;
+    const updatedData = req.body;
+    const result = await postService.updateMyPost(
+      postId as string,
+      updatedData,
+      user?.id,
+    );
+    // send response
+    res.status(200).json({
+      success: true,
+      message: "Post updated successfully",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 // export controllers
 export const postControllers = {
   createPost,
   getAllPosts,
   getPostById,
+  getMyPost,
+  updateMyPost,
 };

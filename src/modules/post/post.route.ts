@@ -12,10 +12,19 @@ router.post(
 
 // GET
 router.get("/", postControllers.getAllPosts);
+router.get(
+  "/myPosts",
+  auth(UserRole.ADMIN, UserRole.USER),
+  postControllers.getMyPost,
+);
 router.get("/:postId", postControllers.getPostById);
 
 // UPDATE
-
+router.patch(
+  "/:postId",
+  auth(UserRole.ADMIN, UserRole.USER),
+  postControllers.updateMyPost,
+);
 // DELETE
 
 export const postRouter = router;
