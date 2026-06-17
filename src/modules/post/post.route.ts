@@ -10,6 +10,9 @@ router.post(
   postControllers.createPost,
 );
 
+// getStats
+router.get("/stats", auth(UserRole.ADMIN), postControllers.getStats);
+
 // GET
 router.get("/", postControllers.getAllPosts);
 router.get(

@@ -1,3 +1,4 @@
+import { arch } from "node:os";
 import {
   CommentStatus,
   Post,
@@ -5,6 +6,7 @@ import {
 } from "../../../generated/prisma/client";
 import { PostWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
+import app from "../../app";
 
 // create post
 const createPost = async (
@@ -303,6 +305,48 @@ const deletePost = async (
   });
 };
 
+// get Stats
+const getStats = async () => {
+  return await prisma.$transaction(async (tx) => {
+    const [
+      totalPosts,
+      publishedPosts,
+      draftPosts,
+      archivedPosts,
+      totalComments,
+      approvedComments,
+      totalUsers,
+      adminCount,
+      userCount,
+    ] = await Promise.all([
+      await tx.post.count(),
+      await tx.post.count({ where: { status: PostStatus.PUBLISHED } }),
+      await tx.post.count({ where: { status: PostStatus.DRAFT } }),
+      await tx.post.count({ where: { status: PostStatus.ARCHIVED } }),
+      await tx.comments.count(),
+      await tx.comments.count({ where: { status: CommentStatus.APPROVED } }),
+      await tx.user.count(),
+      await tx.user.count({
+        where: { role: "ADMIN" },
+      }),
+      await tx.user.count({
+        where: { role: "USER" },
+      }),
+    ]);
+    return {
+      totalPosts,
+      publishedPosts,
+      draftPosts,
+      archivedPosts,
+      totalComments,
+      approvedComments,
+      totalUsers,
+      adminCount,
+      userCount,
+    };
+  });
+};
+
 // export service
 export const postService = {
   createPost,
@@ -311,4 +355,5 @@ export const postService = {
   getMyPost,
   updateMyPost,
   deletePost,
+  getStats,
 };
