@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { postService } from "./post.service";
 import { PostStatus } from "../../../generated/prisma/enums";
 import paginationSortingHelpers from "../../helpers/paginationSortingHelpers";
+import { changeEmail } from "better-auth/api";
+import { UserRole } from "../../Middleware/authMiddleware";
 
 // create posts
 const createPost = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     if (!req.user) {
       return res.status(401).json({
         success: false,
@@ -93,7 +94,9 @@ const getMyPost = async (req: Request, res: Response) => {
     if (!user) {
       throw new Error("You are unauthorized");
     }
+
     const result = await postService.getMyPost(user?.id as string);
+
     // send response
     res.status(200).json({
       success: true,
@@ -139,6 +142,8 @@ const getPostById = async (req: Request, res: Response) => {
 const updateMyPost = async (req: Request, res: Response) => {
   try {
     const user = req.user;
+    const isAdmin = user?.role === UserRole.ADMIN;
+
     if (!user) {
       throw new Error("You are unauthorized");
     }
@@ -148,11 +153,42 @@ const updateMyPost = async (req: Request, res: Response) => {
       postId as string,
       updatedData,
       user?.id,
+      isAdmin,
     );
     // send response
     res.status(200).json({
       success: true,
       message: "Post updated successfully",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+// delete post
+const deletePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    const isAdmin = user?.role === UserRole.ADMIN;
+
+    if (!user) {
+      throw new Error("You are unauthorized");
+    }
+    const { postId } = req.params;
+    const updatedData = req.body;
+    const result = await postService.deletePost(
+      postId as string,
+      user?.id,
+      isAdmin,
+    );
+    // send response
+    res.status(200).json({
+      success: true,
+      message: "Post deleted successfully",
       data: result,
     });
   } catch (err: any) {
@@ -170,4 +206,5 @@ export const postControllers = {
   getPostById,
   getMyPost,
   updateMyPost,
+  deletePost,
 };

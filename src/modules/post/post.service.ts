@@ -203,7 +203,8 @@ const getPostById = async (postId: string) => {
 // get myPost
 const getMyPost = async (authorId: string) => {
   // access just active users
-  await prisma.user.findUniqueOrThrow({
+
+  await prisma.user.findMany({
     where: {
       id: authorId,
       status: "ACTIVE",
@@ -234,6 +235,7 @@ const getMyPost = async (authorId: string) => {
       createdAt: "desc",
     },
   });
+
   // const myTotalPost = await prisma.post.aggregate({
   //   _count: {
   //     id: true,
@@ -247,6 +249,7 @@ const updateMyPost = async (
   postId: string,
   data: Partial<Post>,
   authorId: string,
+  isAdmin: boolean,
 ) => {
   const postData = await prisma.post.findUniqueOrThrow({
     where: {
@@ -257,8 +260,12 @@ const updateMyPost = async (
       authorId: true,
     },
   });
-  if (postData.authorId !== authorId) {
+
+  if (!isAdmin && postData.authorId !== authorId) {
     throw new Error("You are not owner of this post");
+  }
+  if (!isAdmin) {
+    delete data.isFeatured;
   }
   const result = await prisma.post.update({
     where: {
@@ -269,6 +276,33 @@ const updateMyPost = async (
   return result;
 };
 
+// delete post
+const deletePost = async (
+  postId: string,
+  authorId: string,
+  isAdmin: boolean,
+) => {
+  const postData = await prisma.post.findUniqueOrThrow({
+    where: {
+      id: postId,
+    },
+    select: {
+      id: true,
+      authorId: true,
+    },
+  });
+
+  if (!isAdmin && postData.authorId !== authorId) {
+    throw new Error("You are not owner of this post");
+  }
+
+  const result = await prisma.post.delete({
+    where: {
+      id: postId,
+    },
+  });
+};
+
 // export service
 export const postService = {
   createPost,
@@ -276,4 +310,5 @@ export const postService = {
   getPostById,
   getMyPost,
   updateMyPost,
+  deletePost,
 };
