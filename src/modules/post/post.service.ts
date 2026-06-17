@@ -318,6 +318,7 @@ const getStats = async () => {
       totalUsers,
       adminCount,
       userCount,
+      totalViews,
     ] = await Promise.all([
       await tx.post.count(),
       await tx.post.count({ where: { status: PostStatus.PUBLISHED } }),
@@ -332,6 +333,9 @@ const getStats = async () => {
       await tx.user.count({
         where: { role: "USER" },
       }),
+      await tx.post.aggregate({
+        _sum: { views: true },
+      }),
     ]);
     return {
       totalPosts,
@@ -343,6 +347,7 @@ const getStats = async () => {
       totalUsers,
       adminCount,
       userCount,
+      totalViews: totalViews._sum.views,
     };
   });
 };
