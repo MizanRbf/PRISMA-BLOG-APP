@@ -13,7 +13,25 @@ router.post(
   commentControllers.createComment,
 );
 
+// Update Comment
+router.patch(
+  "/:commentId",
+  auth(UserRole.ADMIN, UserRole.USER),
+  commentControllers.updateComment,
+);
+
+// moderate Comment
+router.patch(
+  "/moderate/:commentId",
+  auth(UserRole.ADMIN),
+  commentControllers.moderateComment,
+);
+
 // Delete Comment
-router.delete("/:commentId", commentControllers.deleteComment);
+router.delete(
+  "/:commentId",
+  auth(UserRole.ADMIN, UserRole.USER),
+  commentControllers.deleteComment,
+);
 
 export const commentRouter = router;

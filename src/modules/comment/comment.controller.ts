@@ -39,11 +39,59 @@ const getCommentById = async (req: Request, res: Response) => {
   }
 };
 
+// update comment
+const updateComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const user = req.user;
+    const updatedData = req.body;
+    const result = await commentService.updateComment(
+      commentId as string,
+      user?.id as string,
+      updatedData,
+    );
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+// moderate comment
+const moderateComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const updatedData = req.body;
+    const result = await commentService.moderateComment(
+      commentId as string,
+      updatedData,
+    );
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 // delete comment
 const deleteComment = async (req: Request, res: Response) => {
   try {
+    const user = req.user;
     const { commentId } = req.params;
-    const result = await commentService.deleteComment(commentId as string);
+    const result = await commentService.deleteComment(
+      commentId as string,
+      user?.id as string,
+    );
     res.status(200).json({
       success: true,
       data: result,
@@ -60,5 +108,7 @@ const deleteComment = async (req: Request, res: Response) => {
 export const commentControllers = {
   createComment,
   getCommentById,
+  updateComment,
   deleteComment,
+  moderateComment,
 };
