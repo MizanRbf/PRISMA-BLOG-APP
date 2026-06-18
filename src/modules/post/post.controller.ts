@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { postService } from "./post.service";
 import { PostStatus } from "../../../generated/prisma/enums";
 import paginationSortingHelpers from "../../helpers/paginationSortingHelpers";
@@ -139,7 +139,11 @@ const getPostById = async (req: Request, res: Response) => {
 };
 
 // update myPost
-const updateMyPost = async (req: Request, res: Response) => {
+const updateMyPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user;
     const isAdmin = user?.role === UserRole.ADMIN;
@@ -162,10 +166,7 @@ const updateMyPost = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+    next(err);
   }
 };
 

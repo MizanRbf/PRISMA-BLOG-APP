@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { commentService } from "./comment.service";
-import { success } from "better-auth/*";
 
 // create comment
 const createComment = async (req: Request, res: Response) => {
